@@ -1,4 +1,5 @@
 # docker run wrapper
+[![Build Status](https://travis-ci.org/m3y/docker-run-wrapper.svg?branch=master)](https://travis-ci.org/m3y/docker-run-wrapper)
 
 ## usage
 
