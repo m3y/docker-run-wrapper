@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from docker_run_wrapper import parse, correct_format, construct_command, with_volumepath
@@ -40,6 +41,15 @@ class TestDrw(unittest.TestCase):
         expected = '/drw/test_docker_run_wrapper.py'
         actual = with_volumepath(param)
         self.assertEqual(expected, actual)
+
+
+    def test_dirpath_with_volumepath(self):
+        param = 'sample'
+        os.mkdir(param)
+        expected = '/drw/sample'
+        actual = with_volumepath(param)
+        self.assertEqual(expected, actual)
+        os.rmdir(param)
 
 
     def test_not_filepath_with_volumepath(self):

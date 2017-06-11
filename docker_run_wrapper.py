@@ -81,9 +81,10 @@ def run_command(command_string):
 
 def with_volumepath(param):
     '''
-    ファイルパスにvolumeのパスを付加
+    ファイルパス or ディレクトリパスにvolumeのパスを付加
     '''
-    if os.path.isfile(os.path.abspath(param)):
+    abspath = os.path.abspath(param)
+    if os.path.isfile(abspath) or os.path.isdir(abspath) :
         return VOLUME_NAME + param
     return param
 
