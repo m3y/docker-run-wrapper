@@ -84,9 +84,16 @@ def with_volumepath(param):
     ファイルパス or ディレクトリパスにvolumeのパスを付加
     '''
     abspath = os.path.abspath(param)
-    if os.path.isfile(abspath) or os.path.isdir(abspath) :
+    if os.path.isfile(abspath) or os.path.isdir(abspath):
         return VOLUME_NAME + param
     return param
+
+
+def edit_config():
+    '''
+    設定ファイルの編集
+    '''
+    subprocess.call("vim {}".format(DEFAULT_CONFIG_FILEPATH), shell=True)
 
 
 def convert_param(params):
@@ -106,12 +113,17 @@ def main(input_params):
     command_name = input_params[0]
     params = convert_param(input_params[1:])
 
+    if command_name == "config":
+        edit_config()
+        return 0
+
     config = load_config()
     if command_name not in config:
         raise ValueError('unknown command.')
 
     command = construct_command(config[command_name], command_name, params)
     run_command(command)
+    return 0
 
 
 if __name__ == '__main__':
@@ -121,7 +133,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        main(argv[1:])
+        sys.exit(main(argv[1:]))
     except ValueError, e:
         print(e.args[0])
         sys.exit(1)
