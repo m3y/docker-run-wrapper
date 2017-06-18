@@ -2,21 +2,27 @@
 [![Build Status](https://travis-ci.org/m3y/docker-run-wrapper.svg?branch=master)](https://travis-ci.org/m3y/docker-run-wrapper)
 
 ## usage
+```
+$ ln -s $(pwd)/docker_run_wrapper.py /path/to/bin/drw
+```
 
 ```
-$ cat ~/.config/drw/config.toml
+$ vim ~/.config/drw/config.toml
 python = "python:3"
+ghci = "haskell:latest"
+mysql = "mysql:5.7"
 ```
 
 ```
-$ python docker_run_wrapper.py config
-# lounch vim
-```
-
-```
-$ python docker_run_wrapper.py python
+$ drw python
 Python 3.6.1 (default, Jun  8 2017, 21:43:55)
 [GCC 4.9.2] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
+```
+
+```
+$ drw ghci
+GHCi, version 8.0.2: http://www.haskell.org/ghc/  :? for help
+Prelude>
 ```
