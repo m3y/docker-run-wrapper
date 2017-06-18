@@ -68,8 +68,13 @@ def construct_command(image, command_name, params):
     '''
     docker command の構築
     '''
-    template = 'docker run --rm -it -v $(pwd):{} {} {} {}'
-    return template.format(VOLUME_NAME, image, command_name, ' '.join(params))
+    template = 'docker run --rm -it -w {} -v $(pwd):{} {} {} {}'
+    return template.format(
+        VOLUME_NAME,
+        VOLUME_NAME,
+        image,
+        command_name,
+        ' '.join(params))
 
 
 def run_command(command_string):
@@ -79,28 +84,11 @@ def run_command(command_string):
     subprocess.call(command_string, shell=True)
 
 
-def with_volumepath(param):
-    '''
-    ファイルパス or ディレクトリパスにvolumeのパスを付加
-    '''
-    abspath = os.path.abspath(param)
-    if os.path.isfile(abspath) or os.path.isdir(abspath):
-        return VOLUME_NAME + param
-    return param
-
-
 def edit_config():
     '''
     設定ファイルの編集
     '''
     subprocess.call("vim {}".format(DEFAULT_CONFIG_FILEPATH), shell=True)
-
-
-def convert_param(params):
-    '''
-    パラメータ変換
-    '''
-    return [with_volumepath(x) for x in params]
 
 
 def main(input_params):
@@ -111,7 +99,7 @@ def main(input_params):
         raise SystemException('Please install the Docker for Mac')
 
     command_name = input_params[0]
-    params = convert_param(input_params[1:])
+    params = input_params[1:]
 
     if command_name == "config":
         edit_config()

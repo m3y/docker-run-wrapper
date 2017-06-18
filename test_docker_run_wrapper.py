@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from docker_run_wrapper import parse, correct_format, construct_command, with_volumepath
+from docker_run_wrapper import parse, correct_format, construct_command
 
 
 class TestDrw(unittest.TestCase):
@@ -31,31 +31,8 @@ class TestDrw(unittest.TestCase):
         image = 'python:latest'
         command_name = 'python'
         params = ['-mdoctest', 'example.py']
-        expected = 'docker run --rm -it -v $(pwd):/drw/ python:latest python -mdoctest example.py'
+        expected = 'docker run --rm -it -w /drw/ -v $(pwd):/drw/ python:latest python -mdoctest example.py'
         actual = construct_command(image, command_name, params)
-        self.assertEqual(expected, actual)
-
-
-    def test_filepath_with_volumepath(self):
-        param = 'test_docker_run_wrapper.py'
-        expected = '/drw/test_docker_run_wrapper.py'
-        actual = with_volumepath(param)
-        self.assertEqual(expected, actual)
-
-
-    def test_dirpath_with_volumepath(self):
-        param = 'sample'
-        os.mkdir(param)
-        expected = '/drw/sample'
-        actual = with_volumepath(param)
-        self.assertEqual(expected, actual)
-        os.rmdir(param)
-
-
-    def test_not_filepath_with_volumepath(self):
-        param = 'not_filepath'
-        expected = 'not_filepath'
-        actual = with_volumepath(param)
         self.assertEqual(expected, actual)
 
 
