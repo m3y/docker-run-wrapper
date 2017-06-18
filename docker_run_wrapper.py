@@ -88,7 +88,7 @@ def edit_config():
     '''
     設定ファイルの編集
     '''
-    subprocess.call("vim {}".format(DEFAULT_CONFIG_FILEPATH), shell=True)
+    run_command("vim {}".format(DEFAULT_CONFIG_FILEPATH))
 
 
 def main(input_params):
