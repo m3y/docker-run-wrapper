@@ -114,10 +114,32 @@ def main(input_params):
     return 0
 
 
+def usage():
+    print('''
+NAME:
+   drw - docker run wrapper
+
+USAGE:
+   drw [global options] command
+
+COMMANDS:
+   config         configure
+   help           show help
+   ANY_COMMAND    run command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+''')
+
+
 if __name__ == '__main__':
     argv = sys.argv
-    if (len(argv) < 2):
-        print('Usage:\n\t{} command [option..]'.format(argv[0]))
+    if len(argv) < 2:
+        usage()
+        sys.exit(1)
+
+    if argv[1] in ["-h", "--help", "help"]:
+        usage()
         sys.exit(1)
 
     try:
