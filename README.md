@@ -3,7 +3,7 @@
 
 ## usage
 ```
-$ ln -s $(pwd)/docker_run_wrapper.py /path/to/bin/drw
+$ make install
 ```
 
 ```
