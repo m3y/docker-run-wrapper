@@ -2,7 +2,7 @@ curdir = $(shell pwd)
 
 .PHONY: install
 install:
-	ln -s $(curdir)/bin/drw /usr/local/bin/drw
+	ln -s $(curdir)/drw /usr/local/bin/drw
 
 .PHONY: test
 test:
