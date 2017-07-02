@@ -179,6 +179,9 @@ if __name__ == '__main__':
     if argv[1] in ["-s", "--simulate", "--dry-run"]:
         simulate = True
         argv.pop(0)
+        if len(argv) == 1:
+            usage()
+            sys.exit(1)
 
     try:
         sys.exit(main(argv[1:], simulate))
