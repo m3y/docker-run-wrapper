@@ -2,4 +2,10 @@ curdir = $(shell pwd)
 
 .PHONY: install
 install:
-	ln -s $(curdir)/docker_run_wrapper.py /usr/local/bin/drw
+	ln -s $(curdir)/bin/drw /usr/local/bin/drw
+
+.PHONY: test
+test:
+	@mv drw drw.py
+	python test_drw.py
+	@mv drw.py drw
