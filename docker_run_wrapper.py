@@ -64,6 +64,34 @@ def exists_docker():
         return False
 
 
+def is_shell_mode(params):
+    '''
+    shell 利用判定
+    '''
+    return params.find(" ") > 0
+
+
+def create_command_fragment(input_params, config):
+    '''
+    docker コマンドのためのパラメータ作成
+    '''
+    head = input_params[0]
+    tail = input_params[1:]
+
+    shell_mode = is_shell_mode(head)
+
+    command_name = "/bin/sh" if shell_mode else head
+    params = "-c '" + head + "'" if shell_mode else ' '.join(tail)
+
+    image_key = head.split(" ")[0] if shell_mode else command_name
+    if image_key not in config:
+        raise ValueError('unknown command.')
+
+    image_name = config[image_key]
+
+    return (image_name, command_name, params)
+
+
 def construct_command(image, command_name, params):
     '''
     docker command の構築
@@ -74,7 +102,7 @@ def construct_command(image, command_name, params):
         VOLUME_NAME,
         image,
         command_name,
-        ' '.join(params))
+        params)
 
 
 def run_command(command_string):
@@ -91,25 +119,25 @@ def edit_config():
     run_command("vim {}".format(DEFAULT_CONFIG_FILEPATH))
 
 
-def main(input_params):
+def main(input_params, simulate=False):
     '''
     docker run wrapper.
     '''
     if not exists_docker():
         raise SystemException('Please install the Docker for Mac')
 
-    command_name = input_params[0]
-    params = input_params[1:]
+    image_name, command_name, params = \
+        create_command_fragment(input_params, load_config())
 
     if command_name == "config":
         edit_config()
         return 0
 
-    config = load_config()
-    if command_name not in config:
-        raise ValueError('unknown command.')
+    command = construct_command(image_name, command_name, params)
+    if simulate:
+        print(command)
+        return 0
 
-    command = construct_command(config[command_name], command_name, params)
     run_command(command)
     return 0
 
@@ -122,13 +150,18 @@ NAME:
 USAGE:
    drw [global options] command
 
+   or
+
+   drw [global options] 'commands'
+
 COMMANDS:
-   config         configure
-   help           show help
-   ANY_COMMAND    run command
+   config                       configure
+   help                         show help
+   ANY_COMMAND                  run command
 
 GLOBAL OPTIONS:
-   --help, -h     show help
+   --dry-run, --simulate, -s    dry run option
+   --help, -h                   show help
 ''')
 
 
@@ -142,8 +175,13 @@ if __name__ == '__main__':
         usage()
         sys.exit(1)
 
+    simulate = False
+    if argv[1] in ["-s", "--simulate", "--dry-run"]:
+        simulate = True
+        argv.pop(0)
+
     try:
-        sys.exit(main(argv[1:]))
+        sys.exit(main(argv[1:], simulate))
     except ValueError, e:
         print(e.args[0])
         sys.exit(1)
