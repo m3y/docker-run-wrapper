@@ -119,7 +119,7 @@ def edit_config():
     run_command("vim {}".format(DEFAULT_CONFIG_FILEPATH))
 
 
-def main(input_params):
+def main(input_params, simulate=False):
     '''
     docker run wrapper.
     '''
@@ -134,6 +134,10 @@ def main(input_params):
         return 0
 
     command = construct_command(image_name, command_name, params)
+    if simulate:
+        print(command)
+        return 0
+
     run_command(command)
     return 0
 
@@ -151,12 +155,13 @@ USAGE:
    drw [global options] 'commands'
 
 COMMANDS:
-   config         configure
-   help           show help
-   ANY_COMMAND    run command
+   config                       configure
+   help                         show help
+   ANY_COMMAND                  run command
 
 GLOBAL OPTIONS:
-   --help, -h     show help
+   --dry-run, --simulate, -s    dry run option
+   --help, -h                   show help
 ''')
 
 
@@ -170,8 +175,13 @@ if __name__ == '__main__':
         usage()
         sys.exit(1)
 
+    simulate = False
+    if argv[1] in ["-s", "--simulate", "--dry-run"]:
+        simulate = True
+        argv.pop(0)
+
     try:
-        sys.exit(main(argv[1:]))
+        sys.exit(main(argv[1:], simulate))
     except ValueError, e:
         print(e.args[0])
         sys.exit(1)
