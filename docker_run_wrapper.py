@@ -64,6 +64,28 @@ def exists_docker():
         return False
 
 
+def is_shell_mode(params):
+    return params.find(" ") > 0
+
+
+def create_command_fragment(input_params, config):
+    head = input_params[0]
+    tail = input_params[1:]
+
+    shell_mode = is_shell_mode(head)
+
+    command_name = "/bin/sh" if shell_mode else head
+    params = "-c '" + head + "'" if shell_mode else ' '.join(tail)
+
+    image_key = head.split(" ")[0] if shell_mode else command_name
+    if image_key not in config:
+        raise ValueError('unknown command.')
+
+    image_name = config[image_key]
+
+    return (image_name, command_name, params)
+
+
 def construct_command(image, command_name, params):
     '''
     docker command の構築
@@ -74,7 +96,7 @@ def construct_command(image, command_name, params):
         VOLUME_NAME,
         image,
         command_name,
-        ' '.join(params))
+        params)
 
 
 def run_command(command_string):
@@ -98,18 +120,14 @@ def main(input_params):
     if not exists_docker():
         raise SystemException('Please install the Docker for Mac')
 
-    command_name = input_params[0]
-    params = input_params[1:]
+    image_name, command_name, params = \
+        create_command_fragment(input_params, load_config())
 
     if command_name == "config":
         edit_config()
         return 0
 
-    config = load_config()
-    if command_name not in config:
-        raise ValueError('unknown command.')
-
-    command = construct_command(config[command_name], command_name, params)
+    command = construct_command(image_name, command_name, params)
     run_command(command)
     return 0
 
@@ -121,6 +139,10 @@ NAME:
 
 USAGE:
    drw [global options] command
+
+   or
+
+   drw [global options] 'commands'
 
 COMMANDS:
    config         configure
