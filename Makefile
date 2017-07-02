@@ -7,5 +7,5 @@ install:
 .PHONY: test
 test:
 	@mv drw drw.py
-	python test_docker_run_wrapper.py
+	python test_drw.py
 	@mv drw.py drw
