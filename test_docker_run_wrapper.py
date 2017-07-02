@@ -41,7 +41,7 @@ class TestDrw(unittest.TestCase):
         command_name = 'python'
         params = '-mdoctest example.py'
         expected = 'docker run --rm -it -w /drw/ -v $(pwd):/drw/' + \
-                   'python:latest python -mdoctest example.py'
+                   ' python:latest python -mdoctest example.py'
         actual = construct_command(image, command_name, params)
         self.assertEqual(expected, actual)
 
