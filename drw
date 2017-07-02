@@ -83,6 +83,9 @@ def create_command_fragment(input_params, config):
     command_name = "/bin/sh" if shell_mode else head
     params = "-c '" + head + "'" if shell_mode else ' '.join(tail)
 
+    if command_name == "config":
+        return (None, command_name, None)
+
     image_key = head.split(" ")[0] if shell_mode else command_name
     if image_key not in config:
         raise ValueError('unknown command.')
