@@ -65,10 +65,16 @@ def exists_docker():
 
 
 def is_shell_mode(params):
+    '''
+    shell 利用判定
+    '''
     return params.find(" ") > 0
 
 
 def create_command_fragment(input_params, config):
+    '''
+    docker コマンドのためのパラメータ作成
+    '''
     head = input_params[0]
     tail = input_params[1:]
 
