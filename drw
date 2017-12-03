@@ -6,8 +6,9 @@ docker run wrapper.
 '''
 
 import os
-import subprocess
 import sys
+
+from subprocess import check_call, call, CalledProcessError
 
 
 DEFAULT_CONFIG_FILEPATH = '~/.config/drw/config.toml'
@@ -58,9 +59,9 @@ def exists_docker():
     docker コマンドの存在確認
     '''
     try:
-        subprocess.check_call('/usr/bin/which docker > /dev/null', shell=True)
+        check_call('/usr/bin/which docker > /dev/null', shell=True)
         return True
-    except subprocess.CalledProcessError:
+    except CalledProcessError:
         return False
 
 
@@ -112,7 +113,7 @@ def run_command(command_string):
     '''
     コマンドの実行
     '''
-    subprocess.call(command_string, shell=True)
+    call(command_string, shell=True)
 
 
 def edit_config():
